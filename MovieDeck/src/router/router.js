@@ -1,15 +1,12 @@
-import  {createRouter, createWebHistory} from 'vue-router';
-// importer les composants nécessaire 
-
-
-const routes = [
-    //{path: '/', name:'nom', component: Composant }
-];
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
+import NotFound from '@/components/NotFound.vue'
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
-});
-
-
-export default router;
+  history: createWebHistory(),
+  routes: [
+    {path: '/', name: 'home', component: HomeView},
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound }
+  ]
+})
+export default router
