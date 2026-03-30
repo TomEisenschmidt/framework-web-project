@@ -1,58 +1,53 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+import FilmCard from '../components/FilmCard.vue';
+import apiClient from '../api/apiClient'; // Ajustez le chemin selon votre dossier
 
-import { ref } from 'vue';
-import FilmCard from '../components/FilmCard.vue'
+// La variable est vide au départ
+const films = ref([]);
 
-const films = ref([
-  
-  {
-    id: 1,
-    titre: "Interstellar",
-    annee: 2014,
-    //img: "@/assets/img/films/Interstellar.jpg",
-    img: "https://fr.web.img6.acsta.net/r_1920_1080/img/08/fe/08feaecbc56c480c082003c632f3bc2f.jpg",
-    genre: "Science Fiction"
-  },
-  {
-    id: 2,
-    titre: "The Dark Knight",
-    annee: 2008,
-    img: "https://upload.wikimedia.org/wikipedia/en/1/1c/The_Dark_Knight_%282008_film%29.jpg",
-    genre: "Action"
-  },
-  {
-    id: 3,
-    titre: "Oppenheimer",
-    annee: 2023,
-    img: "https://www.universalpictures.fr/tl_files/content/movies/oppenheimer/posters/01.jpg",
-    genre: "Thriller"
-  },
-  {
-    id: 4,
-    titre: "Inception",
-    annee: 2010,
-    img: "https://fr.web.img6.acsta.net/c_310_420/medias/nmedia/18/72/34/14/19476654.jpg", 
-    genre: "Science Fiction"
-  },
+const fetchFilms = async () => {
+  try {
+    // On appelle la route des films populaires, en français
+    const response = await apiClient.get('/movie/popular?language=fr-FR&page=1');
+    
+    // TMDB stocke la liste des films dans "response.data.results"
+    const tmdbMovies = response.data.results;
 
-  {
-    id: 5,
-    titre: "L'Odyssée",
-    annee: 2026,
-    img: "https://fr.web.img3.acsta.net/img/06/c7/06c7db695682d649705879f4569b56e5.jpg",
-    genre: "Action/Cinéma de Fantasy"
-  },
+    // On transforme les données de TMDB pour qu'elles collent parfaitement 
+    // à ce qu'attend votre composant <FilmCard>
+    films.value = tmdbMovies.map(movie => {
+      return {
+        id: movie.id,
+        titre: movie.title,
+        // On coupe la date "2024-03-01" pour ne garder que l'année "2024"
+        annee: movie.release_date ? movie.release_date.split('-')[0] : 'N/A',
+        // TMDB donne juste le chemin de l'image, on ajoute l'URL de base
+        img: movie.poster_path 
+             ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` 
+             : 'https://via.placeholder.com/500x750?text=Pas+d+image',
+        // TMDB renvoie des IDs de genre. Pour l'instant, on met une valeur par défaut.
+        genre: 'Cinéma' 
+      };
+    });
 
-]);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des films :', error);
+  }
+};
+
+// On exécute la fonction dès que la page est chargée
+onMounted(() => {
+  fetchFilms();
+});
 
 </script>
 
-
 <template>
-  <main class ="home">
+  <main class="home">
     <h1>Bienvenue sur MovieDeck</h1>
+    <h2>La cave à films (Populaires en ce moment)</h2>
 
-    <h2>La cave à films</h2>
     <div class="grid">
       <FilmCard 
         v-for="filmItem in films" 
@@ -62,7 +57,6 @@ const films = ref([
     </div>
   </main>
 </template>
-
 
 <style scoped>
 .home {
