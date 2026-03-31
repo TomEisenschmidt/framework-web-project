@@ -2,11 +2,13 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import FilmCard from '../components/FilmCard.vue';
+import SearchInput from './SearchInput.vue';
 import apiClient from '../api/apiClient';
 
 const films = ref([]);
 const isLoading = ref(true);
 const router = useRouter();
+const searchQuery = ref('');
 
 const fetchFilms = async () => {
   try {
@@ -35,6 +37,37 @@ onMounted(() => {
 const allerAuDetail = (film) => {
   router.push({ name: 'FilmDetail', params: { id: film.id } }); 
 };
+
+
+const lancerRecherche = async () => {
+  if (searchQuery.value.trim() === '') {
+    fetchFilms();
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    const response = await apiClient.get(`/search/movie?query=${searchQuery.value}&language=fr-FR&page=1`);
+    formaterFilms(response.data.results);
+  } catch (error) {
+    console.error('Erreur lors de la recherche :', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const formaterFilms = (tmdbMovies) => {
+  films.value = tmdbMovies.map(movie => ({
+    id: movie.id,
+    titre: movie.title,
+    annee: movie.release_date ? movie.release_date.split('-')[0] : 'N/A',
+    img: movie.poster_path 
+         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` 
+         : 'https://via.placeholder.com/500x750?text=Image+Indisponible',
+    genre: 'Cinéma' 
+  }));
+};
+
 </script>
 
 
@@ -45,6 +78,8 @@ const allerAuDetail = (film) => {
       <h1>Bienvenue sur MovieDeck 🎬</h1>
       <p>Voici les films les plus populaires du moment</p>
     </header>
+
+    <SearchInput v-model="searchQuery" @submit="lancerRecherche" />
 
     <div v-if="isLoading" class="loading">
       <p>Chargement des bobines...</p>
