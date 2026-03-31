@@ -68,6 +68,20 @@ const formaterFilms = (tmdbMovies) => {
   }));
 };
 
+
+const fetchTopRated = async () => {
+  isLoading.value = true;
+  try {
+    const response = await apiClient.get('/movie/top_rated?language=fr-FR&page=1');
+    
+    formaterFilms(response.data.results);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des tops :', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 </script>
 
 
@@ -76,13 +90,18 @@ const formaterFilms = (tmdbMovies) => {
     
     <header class="hero">
       <h1>Bienvenue sur MovieDeck 🎬</h1>
-      <p>Voici les films les plus populaires du moment</p>
+      <p>Explorez le meilleur du septième art !</p>
     </header>
 
     <SearchInput v-model="searchQuery" @submit="lancerRecherche" />
 
+    <div class="filters">
+      <button @click="fetchFilms" class="filter-btn">Récents & Populaires</button>
+      <button @click="fetchTopRated" class="filter-btn">Mieux notés</button>
+    </div>
+
     <div v-if="isLoading" class="loading">
-      <p>Chargement des bobines...</p>
+      <p>Chargement</p>
     </div>
 
     <div v-else class="movies-grid">
@@ -121,6 +140,34 @@ const formaterFilms = (tmdbMovies) => {
   font-size: 1.2rem;
   color: #888;
   padding: 50px 0;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.filter-btn {
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  border-color: #42b883;
+  background-color: #222;
+}
+
+.filter-btn:focus {
+  background-color: #42b883;
+  color: #111;
+  border-color: #42b883;
 }
 
 .movies-grid {

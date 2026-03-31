@@ -3,11 +3,13 @@
 <template>
   <header class="header">
     <nav class="nav-container">
-      <router-link to="/" class="logo">
+      <!-- <router-link to="/" class="logo">
         MovieDeck
-      </router-link>
+      </router-link> -->
+      <div class="logo">MovieDeck</div>
 
       <div class="nav-links">
+        <router-link to="/" class="nav-item">Tous les films</router-link>
         <router-link to="/favoris" class="nav-item">Vos Favoris</router-link>
         <!-- <router-link to="/about" class="nav-item">À Propos</router-link> -->
       </div>
