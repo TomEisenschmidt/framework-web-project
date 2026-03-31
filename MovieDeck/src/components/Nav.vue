@@ -7,23 +7,22 @@
         MovieDeck
       </router-link>
 
-      <!-- <div class="nav-links">
-        <router-link to="/" class="nav-item">Accueil</router-link>
-        <router-link to="/about" class="nav-item">À Propos</router-link>
-      </div> -->
+      <div class="nav-links">
+        <router-link to="/favoris" class="nav-item">Vos Favoris</router-link>
+        <!-- <router-link to="/about" class="nav-item">À Propos</router-link> -->
+      </div>
     </nav>
   </header>
 </template>
 
 <style scoped>
 .header {
-  background-color: #1a1a1a; /*  style Cinéma */
-  /* box-shadow: 0 2px 4px rgba(0,0,0,0.5); */
+  background-color: #1a1a1a; 
 }
 
 .nav-container {
   display: flex;
-  justify-content: space-between; /* Espacement entre Logo et Liens */
+  justify-content: space-between;
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
@@ -32,7 +31,7 @@
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #42b883; /* Vert Vue.js */
+  color: #42b883; 
   text-decoration: none;
 }
 
@@ -52,7 +51,6 @@
   color: #42b883;
 }
 
-/* Vue Router ajoute automatiquement cette classe au lien actif */
 .router-link-active {
   font-weight: bold;
   border-bottom: 2px solid #42b883;
